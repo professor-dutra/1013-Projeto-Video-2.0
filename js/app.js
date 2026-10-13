@@ -5,6 +5,7 @@
   - Salva só a pasta alterada
 ========================================*/
 
+
 /*1. ELEMENTOS DO HTML*/
 /*Vídeo principal*/ 
 const video = document.querySelector(".video-player");
@@ -27,6 +28,7 @@ const mensagemBloqueio = document.querySelector("#mensagemBloqueio");
 if(navigator.storage && navigator.storage.persist){
     navigator.storage.persist();
 }
+
 
 /*09170547 - CONTROLES DE TEMPO*/
 /*PLAY / PAUSE*/
@@ -69,6 +71,7 @@ function formatarDuracao(segundos){
            String(segundosRestantes).padStart(2, "0");
 }
 
+
 /*========================================
   COMANDOS AO TOCAR/CLICAR NO VÍDEO
 ========================================*/
@@ -93,71 +96,56 @@ video.addEventListener("pointerup", (evento) => {
 
     /* TOQUE À ESQUERDA */
     if(porcentagem < 0.30){
-
         if(agora - ultimoToqueEsquerda < 300){
             video.currentTime = Math.max(
                 0,
                 video.currentTime - 20
             );
-
             ultimoToqueEsquerda = 0;
         }else{
             ultimoToqueEsquerda = agora;
         }
-
         return;
     }
 
     /* TOQUE À DIREITA */
     if(porcentagem > 0.70){
-
         if(agora - ultimoToqueDireita < 300){
             video.currentTime = Math.min(
                 video.duration,
                 video.currentTime + 20
             );
-
             ultimoToqueDireita = 0;
         }else{
             ultimoToqueDireita = agora;
         }
-
         return;
     }
 
     /* TOQUE NO CENTRO */
     if(agora - ultimoToqueCentro < 300){
-
         clearTimeout(temporizadorToque);
-
         ultimoToqueCentro = 0;
-
         if(document.fullscreenElement){
             document.exitFullscreen();
         }else{
             videoContainer.requestFullscreen();
         }
-
         return;
     }
 
     ultimoToqueCentro = agora;
-
     temporizadorToque = setTimeout(() => {
-
         if(video.paused){
             video.play();
         }else{
             video.pause();
         }
-
         ultimoToqueCentro = 0;
-
     }, 300);
 });
 
 document.addEventListener("keydown", (evento) => {
-
     if(playerBloqueado){
         return;
     }
@@ -170,7 +158,6 @@ document.addEventListener("keydown", (evento) => {
     ){
         return;
     }
-
     if(evento.repeat){
         return;
     }
@@ -178,7 +165,6 @@ document.addEventListener("keydown", (evento) => {
     /* SETA ESQUERDA — RECUAR 20 SEGUNDOS */
     if(evento.key === "ArrowLeft"){
         evento.preventDefault();
-
         video.currentTime = Math.max(
             0,
             video.currentTime - 20
@@ -188,7 +174,6 @@ document.addEventListener("keydown", (evento) => {
     /* SETA DIREITA — AVANÇAR 13 SEGUNDOS */
     if(evento.key === "ArrowRight"){
         evento.preventDefault();
-
         video.currentTime = Math.min(
             video.duration,
             video.currentTime + 13
@@ -198,22 +183,18 @@ document.addEventListener("keydown", (evento) => {
     /* SETA ACIMA — VÍDEO ANTERIOR */
     if(evento.key === "ArrowUp"){
         evento.preventDefault();
-
         btnAnterior.click();
     }
 
     /* SETA ABAIXO — PRÓXIMO VÍDEO */
     if(evento.key === "ArrowDown"){
         evento.preventDefault();
-
         btnProximo.click();
     }
 
     /* M — MUDO */
     if(evento.key.toLowerCase() === "m"){
-
         evento.preventDefault();
-
         if(video.volume > 0){
             video.volume = 0;
             controleVolume.value = 0;
@@ -232,24 +213,27 @@ barraProgresso.addEventListener("input", () => {
             (barraProgresso.value / 100) * video.duration;
     }
 });
+
 /*Recuar 15 segundos*/
 btnRecuar.addEventListener("click", () => {
     video.currentTime -= 15;
 });
+
 /*Adiantar 10 segundos*/
 btnAdiantar.addEventListener("click", () => {
     video.currentTime += 10;
 });
+
 /*CONTROLE DE VOLUME*/
 controleVolume.addEventListener("input", () => {
     video.volume = controleVolume.value;
-
     if(video.volume === 0){
         btnVolume.textContent = "🔇";
     }else{
         btnVolume.textContent = "🔊";
     }
 });
+
 /*BOTÃO VOLUME*/
 btnVolume.addEventListener("click", () => {
     if(video.volume > 0){
@@ -263,7 +247,7 @@ btnVolume.addEventListener("click", () => {
     }
 });
 
-/*0920 - CONTROLES DE NAVEGAÇÃO*/
+/* CONTROLES DE NAVEGAÇÃO*/
 /*Próximo vídeo*/
 btnProximo.addEventListener("click", () => {
     /* Verifica se existe uma pasta selecionada */
@@ -289,29 +273,23 @@ btnProximo.addEventListener("click", () => {
 
 /* Vídeo anterior */
 btnAnterior.addEventListener("click", () => {
-
     /* Verifica se existe uma pasta selecionada */
     if(!pastaSelecionada){
         return;
     }
-
     /* Verifica se existe um vídeo selecionado */
     if(!videoPlaylistSelecionado){
         return;
     }
-
     /* Descobre a posição do vídeo atual */
     const indiceAtual =
         pastaSelecionada.videos.indexOf(videoPlaylistSelecionado);
-
     /* Calcula o vídeo anterior */
     const anteriorIndice = indiceAtual - 1;
-
     /* Verifica se existe um vídeo anterior */
     if(anteriorIndice < 0){
         return;
     }
-
     /* Seleciona o vídeo anterior */
     const videoAnterior = pastaSelecionada.videos[anteriorIndice];
     carregarVideoPlaylist(videoAnterior);
@@ -320,138 +298,117 @@ btnAnterior.addEventListener("click", () => {
 /* TELA CHEIA */
 const videoContainer = document.querySelector(".video-container");
 btnFullscreen.addEventListener("click", async () => {
-
     try {
-
         if(document.fullscreenElement){
-
             await document.exitFullscreen();
-
         }else{
-
             await videoContainer.requestFullscreen({
                 navigationUI: "hide"
             });
-
         }
-
     } catch(erro) {
-
         console.error(
             "Erro no fullscreen:",
             erro
         );
-
     }
-
 });
 let temporizadorControles = null;
 
-/* ESCONDER BARRA EM FULLSCREEN */
-function esconderControlesFullscreen(){
-    if(!document.fullscreenElement){
+
+/*========================================
+  CONTROLES E NOME DO VÍDEO
+  - Funciona em tela normal e fullscreen
+  - Oculta após 5 segundos sem interação
+========================================*/
+
+const nomeVideoAtual = document.querySelector("#nomeVideoAtual");
+
+
+function mostrarControles(){
+    clearTimeout(temporizadorControles);
+
+    videoContainer.classList.remove("controles-ocultos");
+
+    if(!enderecoVideoAtual){
         return;
     }
-    clearTimeout(temporizadorControles);
+
     temporizadorControles = setTimeout(() => {
-        document.querySelector(".barra-controles").style.opacity = "0";
+        videoContainer.classList.add("controles-ocultos");
     }, 5000);
 }
 
-/* MOSTRAR CONTROLES AO MOVIMENTAR O MOUSE */
-videoContainer.addEventListener("mousemove", () => {
-    if(!document.fullscreenElement){
-        return;
-    }
-    document.querySelector(".barra-controles").style.opacity = "1";
-    esconderControlesFullscreen();
+
+function esconderControles(){
+    clearTimeout(temporizadorControles);
+    temporizadorControles = setTimeout(() => {
+        videoContainer.classList.add("controles-ocultos");
+    }, 5000);
+}
+
+/* MOVIMENTAÇÃO DO MOUSE OU INTERAÇÃO COM O PLAYER */
+videoContainer.addEventListener("pointermove", () => {
+    mostrarControles();
+});
+
+/* QUANDO O VÍDEO COMEÇA A REPRODUZIR */
+video.addEventListener("play", () => {
+    mostrarControles();
+});
+
+/* QUANDO UM VÍDEO É PAUSADO */
+video.addEventListener("pause", () => {
+    clearTimeout(temporizadorControles);
+    videoContainer.classList.remove("controles-ocultos");
 });
 
 /*========================================
   DESLIZAR PARA MOSTRAR A BARRA
 ========================================*/
-
 let inicioArrasteX = 0;
 let inicioArrasteY = 0;
 let arrastandoFullscreen = false;
 
 videoContainer.addEventListener("pointerdown", (evento) => {
-
-    /* Só interessa quando estiver em fullscreen */
     if(!document.fullscreenElement){
         return;
     }
-
-    const barra =
-        document.querySelector(".barra-controles");
-
-    /* Só interessa quando a barra estiver escondida */
-    if(barra.style.opacity !== "0"){
+    if(!videoContainer.classList.contains("controles-ocultos")){
         return;
     }
-
     inicioArrasteX = evento.clientX;
     inicioArrasteY = evento.clientY;
-
     arrastandoFullscreen = true;
 });
 
-
 videoContainer.addEventListener("pointerup", (evento) => {
-
     if(!arrastandoFullscreen){
         return;
     }
-
     arrastandoFullscreen = false;
-
-    /* Só interessa quando estiver em fullscreen */
     if(!document.fullscreenElement){
         return;
     }
-
-    const barra =
-        document.querySelector(".barra-controles");
-
-    /* Calcula o deslocamento */
     const deslocamentoX =
         Math.abs(evento.clientX - inicioArrasteX);
-
     const deslocamentoY =
         Math.abs(evento.clientY - inicioArrasteY);
-
-    const distanciaMinima = 30;
-
-    /* Verifica se realmente houve deslize */
-    if(
-        deslocamentoX >= distanciaMinima ||
-        deslocamentoY >= distanciaMinima
-    ){
-
-        /* Mostra a barra */
-        barra.style.opacity = "1";
-
-        /* Reinicia o temporizador */
-        esconderControlesFullscreen();
-
-        /* Impede que o gesto seja tratado como toque normal */
+    if(deslocamentoX >= 30 || deslocamentoY >= 30){
+        mostrarControles();
         evento.stopPropagation();
     }
-
 });
 
-/* CONTROLE DO FULLSCREEN */
+/*========================================
+  MUDANÇA DO MODO DE EXIBIÇÃO
+========================================*/
 document.addEventListener("fullscreenchange", () => {
-    if(document.fullscreenElement){
-        document.querySelector(".barra-controles").style.opacity = "1";
-        esconderControlesFullscreen();
-    }else{
-        clearTimeout(temporizadorControles);
-        document.querySelector(".barra-controles").style.opacity = "1";
-    }
+    mostrarControles();
 });
 
-/*09170852 - VELOCIDADE DO VÍDEO */
+
+/* VELOCIDADE DO VÍDEO */
 controleVelocidade.addEventListener("change", () => {
     video.playbackRate = Number(controleVelocidade.value);
 });
@@ -483,17 +440,16 @@ async function obterArquivo(item){
             return null;
         }
     }
-  
+
     // CENÁRIO 2: Celular / Web (Arquivo binário vindo do IndexedDB)
     if (item.arquivo) {
         // Se veio do IndexedDB após reiniciar, ele mantém as propriedades do arquivo binário (Blob)
         return item.arquivo; 
     }
-  
-  return null;
+    return null;
 }
 
-/*09161711-Endereço temporário do vídeo atual*/
+/*Endereço temporário do vídeo atual*/
 let enderecoVideoAtual = null;
 
 async function carregarVideoPlaylist(videoSelecionado){
@@ -509,6 +465,15 @@ async function carregarVideoPlaylist(videoSelecionado){
 
     videoPlaylistSelecionado = videoSelecionado;
 
+    /* Atualiza o nome exibido sobre o vídeo */
+    nomeVideoAtual.textContent =
+        videoSelecionado.nomePlaylist || videoSelecionado.nome;
+
+    nomeVideoAtual.title = nomeVideoAtual.textContent;
+
+    /* Mostra o nome e os controles */
+    mostrarControles();
+
     marcarVideoSelecionado();
 
     if(enderecoVideoAtual){
@@ -519,110 +484,112 @@ async function carregarVideoPlaylist(videoSelecionado){
 
     video.src = enderecoVideoAtual;
     video.load();
+
     video.play().catch(() => {});
 }
 
-/*0922 PASSAR AUTOMATICAMENTE PARA O PRÓXIMO VÍDEO */
-video.addEventListener("ended", () => {
 
+/*PASSAR AUTOMATICAMENTE PARA O PRÓXIMO VÍDEO */
+video.addEventListener("ended", () => {
     /* Verifica se existe uma pasta selecionada */
     if(!pastaSelecionada){
         return;
     }
-
     /* Verifica se existe um vídeo selecionado */
     if(!videoPlaylistSelecionado){
         return;
     }
-
     /* Descobre a posição do vídeo atual */
     const indiceAtual =
         pastaSelecionada.videos.indexOf(videoPlaylistSelecionado);
-
     /* Calcula o próximo vídeo */
     const proximoIndice = indiceAtual + 1;
-
     /* Verifica se existe um próximo vídeo */
     if(proximoIndice >= pastaSelecionada.videos.length){
         return;
     }
-
     /* Carrega e reproduz o próximo vídeo */
     const proximoVideo = pastaSelecionada.videos[proximoIndice];
     carregarVideoPlaylist(proximoVideo);
 });
 
-/*Tela de Login*/
+/*1. Tela de Login*/
 const telaLogin = document.querySelector(".login");
-
 /*Campo Usuário*/
 const campoUsuario = document.querySelector("#usuario");
-
 /*Botão LOGAR*/
 const btnLogin = document.querySelector("#btnLogin");
-
 /*Número mostrado pelo cronômetro*/
 const tempo = document.querySelector("#tempo");
-
 /*Tela de bloqueio*/
 const telaBloqueio = document.querySelector(".bloqueio");
-
 /*Campo da senha de desbloqueio*/
 const campoSenhaDesbloqueio = document.querySelector("#senhaDesbloqueio");
-
 /*Botão DESBLOQUEAR*/
 const btnDesbloquear = document.querySelector("#btnDesbloquear");
 
-/*2. CONFIGURAÇÕES*/
+
+/*2. CONFIGURAÇÕES TEMPO BLOQUEIO*/
 // Senha utilizada para cancelar o bloqueio
-const SENHA_BLOQUEIO = "1";
-
+const SENHA_BLOQUEIO = "";
 // Tempo do primeiro cronômetro
-// 2 horas m(1) * d(1) * h(2) * min(60) * seg(60)
-const TEMPO_INICIAL = 1 * 30 * 60 * 60 * 60;
-
+// mês(1) * dia(0) * horas(00) * min(00) * seg(00)
+const TEMPO_INICIAL = 
+       1  *    30   *      60  *     60  *     60;
 // Tempo do segundo cronômetro
-// 2 horas m(1) * d(1) * h(2) * min(60) * seg(60)
-const TEMPO_BLOQUEIO = 1  *  3  *  60  *  60;
+// mês(1) * dia(1) * horas(2) * min(60) * seg(60)
+const TEMPO_BLOQUEIO = 
+       1  *     1  *       3  *      60  *     60;
+
 
 /*3. CONTROLE DOS CRONÔMETROS*/
 // Guarda intervalo do primeiro cronômetro
 let intervaloInicial = null;
-
 // Guarda intervalo do segundo cronômetro
 let intervaloBloqueio = null;
-
 // Guarda os segundos do primeiro cronômetro
 let segundosInicial = TEMPO_INICIAL;
-
 // Guarda os segundos do segundo cronômetro
 let segundosBloqueio = TEMPO_BLOQUEIO;
-
 // Indica se o primeiro ciclo já foi iniciado.
 let primeiroCicloIniciado = false;  
-
 // Indica se o vídeo está realmente bloqueado.
 let playerBloqueado = false;
 
-/*4. ESTADO INICIAL DO APLICATIVO*/
 
+/*4. ESTADO INICIAL DO APLICATIVO*/
 // A tela de bloqueio começa escondida
 telaBloqueio.style.display = "none";
-
 // Volume inicial do vídeo: 20%
 video.volume = 0.2;
-
 // O vídeo começa pausado
 video.pause();
 
-/* Define o estado inicial conforme o dispositivo */
-if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-    // No celular, esconde a tela de Login
-    telaLogin.style.display = "none";
-} else {
-    // No computador, mantém o Login e o foco no campo Usuário
+
+/* Define o estado inicial conforme o ambiente */
+
+/* Aplicativo instalado como PWA */
+const modoStandalone =
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+
+/* Executável desktop: Electron ou Tauri, se disponível */
+const executavelDesktop =
+    window.electronAPI !== undefined ||
+    window.__TAURI__ !== undefined ||
+    (window.process && window.process.type === "renderer");
+
+/* Login somente quando aberto como site no navegador */
+const acessoComoSite =
+    !modoStandalone && !executavelDesktop;
+
+if(acessoComoSite){
+    telaLogin.style.display = "flex";
     campoUsuario.focus();
+}else{
+    telaLogin.style.display = "none";
 }
+
 
 /*5. LOGAR*/
 btnLogin.addEventListener("click", () => {
@@ -632,135 +599,102 @@ btnLogin.addEventListener("click", () => {
     video.focus();
 });
 
-/*7. PRIMEIRO CRONÔMETRO*/
+
+/*6. PRIMEIRO CRONÔMETRO*/
 function iniciarCronometroInicial(){
     // Evita criar dois cronômetros ao mesmo tempo
     clearInterval(intervaloInicial);
-
     // Começa novamente com 10 segundos
     segundosInicial = TEMPO_INICIAL;
-
     // Cria uma contagem que acontece a cada 1 segundo
     intervaloInicial = setInterval(() => {
-
         // Diminui 1 segundo
         segundosInicial--;
-
         // Quando chegar a zero
         if(segundosInicial <= 0){
-
             // Para o cronômetro
             clearInterval(intervaloInicial);
-
             // Limpa a variável
             intervaloInicial = null;
-
             // Mostra a tela de aviso
             iniciarTelaBloqueio();
         }
-
     }, 1000);
 }
 
 
-/*8. QUANDO VÍDEO COMEÇA A REPRODUZIR*/
+/*7. QUANDO VÍDEO COMEÇA A REPRODUZIR*/
 video.addEventListener("play", () => {
-
     // Se o vídeo estiver realmente bloqueado,
     // impede a reprodução.
     if(playerBloqueado){
         video.pause();
         return;
     }
-
     // Se o primeiro ciclo já foi iniciado,
     // não inicia outro cronômetro.
     if(primeiroCicloIniciado){
         return;
     }
-
     // Marca que o primeiro ciclo começou.
     primeiroCicloIniciado = true;
-
     // Inicia o primeiro cronômetro.
     iniciarCronometroInicial();
 });
 
 
-/*9. MOSTRAR TELA DE AVISO*/
+/*8. MOSTRAR TELA DE AVISO*/
 function iniciarTelaBloqueio(){
-
     // IMPORTANTE:
     // Neste momento o vídeo NÃO está bloqueado.
     playerBloqueado = false;
-
     // O vídeo continua reproduzindo.
-
     // Mostra a tela de aviso
     telaBloqueio.style.display = "flex";
-
     // Mensagem do período de aviso
     mensagemBloqueio.textContent =
         "O VÍDEO SERÁ BLOQUEADO APÓS";
-
     // Inicia o segundo cronômetro
     iniciarCronometroBloqueio();
-
     // Coloca o cursor diretamente no campo da senha
     campoSenhaDesbloqueio.focus();
 }
 
 
-/*10. SEGUNDO CRONÔMETRO*/
+/*9. SEGUNDO CRONÔMETRO*/
 function iniciarCronometroBloqueio(){
-
     // Cancela qualquer contagem anterior
     clearInterval(intervaloBloqueio);
-
     // Começa novamente em 15 segundos
     segundosBloqueio = TEMPO_BLOQUEIO;
-
     // Mostra a tela de aviso
     telaBloqueio.style.display = "flex";
-
     // Mostra imediatamente 15
     tempo.textContent = formatarTempo(segundosBloqueio);
-
     // Cria a contagem de 1 em 1 segundo
     intervaloBloqueio = setInterval(() => {
-
         // Diminui 1 segundo
         segundosBloqueio--;
-
         // Atualiza o número na tela
         tempo.textContent = formatarTempo(segundosBloqueio);
-
         // Quando chegar a zero
         if(segundosBloqueio <= 0){
-
             // Para o cronômetro
             clearInterval(intervaloBloqueio);
-
             // Limpa a variável
             intervaloBloqueio = null;
-
             // Agora sim bloqueia o vídeo
             bloquearVideo();
         }
-
     }, 1000);
 }
 
 
-/*11. FORMATAÇÃO DO TEMPO*/
+/*10. FORMATAÇÃO DO TEMPO*/
 function formatarTempo(segundos){
-
     const horas = Math.floor(segundos / 3600);
-
     const minutos = Math.floor((segundos % 3600) / 60);
-
     const segundosRestantes = segundos % 60;
-
     return (
         String(horas).padStart(2, "0") + ":" +
         String(minutos).padStart(2, "0") + ":" +
@@ -769,34 +703,25 @@ function formatarTempo(segundos){
 }
 
 
-/*12. DESBLOQUEAR / CANCELAR BLOQUEIO*/
+/*11. DESBLOQUEAR / CANCELAR BLOQUEIO*/
 btnDesbloquear.addEventListener("click", () => {
-
     // Verifica se a senha digitada está correta
     if(campoSenhaDesbloqueio.value !== SENHA_BLOQUEIO){
-
         // Senha incorreta mantém a tela aberta
         campoSenhaDesbloqueio.focus();
-
         return;
     }
-
     // Para o segundo cronômetro
     clearInterval(intervaloBloqueio);
     intervaloBloqueio = null;
-
     // Esconde a tela
     telaBloqueio.style.display = "none";
-
     // Limpa o campo da senha
     campoSenhaDesbloqueio.value = "";
-
     // Libera o vídeo
     playerBloqueado = false;
-
     // Reinicia o ciclo de proteção de 10 segundos
     iniciarCronometroInicial();
-
     // Se o vídeo estava pausado pelo bloqueio,
     // retoma a reprodução.
     if(video.paused){
@@ -805,37 +730,32 @@ btnDesbloquear.addEventListener("click", () => {
 });
 
 
-/*13. BLOQUEAR O VÍDEO*/
+/*12. BLOQUEAR O VÍDEO*/
 function bloquearVideo(){
-
     // Agora o vídeo está realmente bloqueado
     playerBloqueado = true;
-
     // Pausa o vídeo
     video.pause();
-
     // Altera a mensagem
     mensagemBloqueio.textContent =
         "VÍDEO PAUSADO. DIGITE A SENHA PARA RETOMAR";
-
     // Mantém a tela de bloqueio visível
     telaBloqueio.style.display = "flex";
-
     // O cronômetro não deve mais ficar contando
     tempo.textContent = "00";
-
     // Garante que o campo da senha esteja disponível
     campoSenhaDesbloqueio.focus();
 }
 
-/*14. ENTER PARA DESBLOQUEAR*/
+
+/*13. ENTER PARA DESBLOQUEAR*/
 campoSenhaDesbloqueio.addEventListener("keydown", (evento) => {
     if(evento.key === "Enter"){
         btnDesbloquear.click();
     }
 });
 
-/*09171407 - ========================================
+/*========================================
 PLAYLIST — PASTAS
 ========================================*/
 /* ELEMENTOS DA PLAYLIST */
@@ -843,10 +763,8 @@ const btnNovaPasta = document.querySelector("#btnNovaPasta");
 const listaPastas = document.querySelector("#listaPastas");
 /* GUARDA AS PASTAS */
 let pastas = [];
-
 /* PASTA ATUALMENTE SELECIONADA */
 let pastaSelecionada = null;
-
 /* VÍDEO ATUALMENTE SELECIONADO */
 let videoPlaylistSelecionado = null;
 
@@ -856,14 +774,12 @@ let videoPlaylistSelecionado = null;
 let bancoPlaylist = null;
 let bancoPlaylistPronto = false;
 const requestBanco = indexedDB.open("ProjetoVideo20", 1);
-
 requestBanco.onupgradeneeded = (evento) => {
     const banco = evento.target.result;
     banco.createObjectStore("playlist", {
         keyPath: "id"
     });
 };
-
 requestBanco.onsuccess = (evento) => {
     bancoPlaylist = evento.target.result;
     bancoPlaylistPronto = true;
@@ -872,7 +788,6 @@ requestBanco.onsuccess = (evento) => {
        antes de o banco ficar pronto */
     carregarPlaylist();
 };
-
 requestBanco.onerror = () => {
     console.error("Erro ao abrir o banco da playlist.");
 };
@@ -886,20 +801,15 @@ function salvarPasta(pasta){
         /* Será salva por carregarPlaylist() quando o banco abrir */
         return;
     }
-
     const transacao =
         bancoPlaylist.transaction("playlist", "readwrite");
-
     transacao.objectStore("playlist").put(pasta);
-
     transacao.oncomplete = () => {
         console.log("Pasta salva com sucesso:", pasta.nome);
     };
-
     transacao.onerror = () => {
         console.error("Erro ao salvar a pasta:", transacao.error);
     };
-
     transacao.onabort = () => {
         console.error("Transação abortada:", transacao.error);
         alert(
@@ -908,17 +818,16 @@ function salvarPasta(pasta){
         );
     };
 }
-
 /* Salva TODAS as pastas (usado só na inicialização) */
 function salvarPlaylist(){
     if(!bancoPlaylistPronto){
         return;
     }
-
     pastas.forEach((pasta) => {
         salvarPasta(pasta);
     });
 }
+
 
 /*========================================
   CARREGAR PLAYLIST
@@ -934,20 +843,15 @@ function carregarPlaylist(){
     const consulta = loja.getAll();
     consulta.onsuccess = () => {
         const doBanco = consulta.result;
-
         /* Pastas criadas antes de o banco abrir
            não podem ser perdidas */
         const idsBanco = new Set(doBanco.map((p) => p.id));
         const pendentes = pastas.filter((p) => !idsBanco.has(p.id));
-
         pastas = doBanco.concat(pendentes);
-
         mostrarPastas();
-
         pendentes.forEach((pasta) => {
             salvarPasta(pasta);
         });
-
         console.log(
             "Playlist carregada:",
             pastas
@@ -962,13 +866,10 @@ function carregarPlaylist(){
 btnNovaPasta.addEventListener("click", () => {
 /* Pede o nome da pasta */
 const nomePasta = prompt("Digite o nome da pasta:");
-
 /* Se o usuário cancelar ou não digitar nada, não cria */
 if(!nomePasta){
     return;
 }
-
-/* Cria a nova pasta */
 const novaPasta = {
     id: Date.now(),
     nome: nomePasta,
@@ -982,25 +883,41 @@ salvarPasta(novaPasta);
 mostrarPastas();
 });
 
-/*09171426 - MOSTRAR AS PASTAS */
+/* MOSTRAR AS PASTAS */
 function mostrarPastas(){
-/* Limpa a lista */
-listaPastas.innerHTML = "";
-/* Percorre todas as pastas */
-pastas.forEach((pasta) => {
+    /* Limpa a lista */
+    listaPastas.innerHTML = "";
+    /* Percorre todas as pastas */
+    pastas.forEach((pasta) => {
     /* BOTÃO DA PASTA */
     const elementoPasta = document.createElement("button");
     elementoPasta.textContent = "📁 " + pasta.nome;
+
+    /* DESTACA A PASTA EM USO PELO ID */
+    if(
+        pastaSelecionada &&
+        pastaSelecionada.id === pasta.id
+    ){
+        elementoPasta.classList.add("pasta-ativa");
+    }
+    
     /* Selecionar a pasta */
     elementoPasta.addEventListener("click", () => {
-        /* Guarda a pasta selecionada */
-        pastaSelecionada = pasta;
-        videoPlaylistSelecionado = null;
-        /* Mostra o nome da pasta */
-        document.querySelector("#nomePastaSelecionada").textContent =
-            pasta.nome;
-        mostrarVideosPlaylist();
+    /* Guarda a pasta selecionada */
+    pastaSelecionada = pasta;
+    videoPlaylistSelecionado = null;
+    /* Atualiza o destaque das pastas */
+    mostrarPastas();
+    /* Atualiza o nome da pasta */
+    document.querySelector("#nomePastaSelecionada").textContent =
+        pasta.nome;
+    mostrarVideosPlaylist();        
+    /* Mostra o nome da pasta */
+    document.querySelector("#nomePastaSelecionada").textContent =
+        pasta.nome;
+    mostrarVideosPlaylist();
     });
+
     /* BOTÃO RENOMEAR */
     const btnRenomear = document.createElement("button");
     btnRenomear.textContent = "✏️";
@@ -1014,11 +931,8 @@ pastas.forEach((pasta) => {
         if(!novoNome){
             return;
         }
-
         pasta.nome = novoNome;
-
         salvarPasta(pasta);
-
         if(pastaSelecionada === pasta){
             document.querySelector("#nomePastaSelecionada").textContent = novoNome;
         }
@@ -1029,7 +943,6 @@ pastas.forEach((pasta) => {
     btnExcluir.textContent = "🗑️";
     btnExcluir.title = "Excluir Pasta";
     btnExcluir.addEventListener("click", (evento) => {
-
         /* Impede que o clique seja propagado para a pasta */
         evento.stopPropagation();
         const confirmar = confirm(
@@ -1038,29 +951,23 @@ pastas.forEach((pasta) => {
         if(!confirmar){
             return;
         }
-
         /* Remove a pasta do banco */
         const transacao =
             bancoPlaylist.transaction("playlist", "readwrite");
-
         transacao.objectStore("playlist").delete(pasta.id);
-
         transacao.oncomplete = () => {
             console.log("Pasta excluída e removida do banco.");
         };
-
         transacao.onerror = () => {
             console.error(
                 "Erro ao excluir pasta:",
                 transacao.error
             );
         };
-
         /* Remove a pasta do array */
         pastas = pastas.filter((item) => {
             return item.id !== pasta.id;
         });
-
         /* Se a pasta excluída estava selecionada,
            volta para a mensagem inicial */
         if(pastaSelecionada === pasta){
@@ -1068,16 +975,15 @@ pastas.forEach((pasta) => {
                 "SELECIONE UMA PASTA";
             pastaSelecionada = null;
             videoPlaylistSelecionado = null;
+                nomeVideoAtual.textContent = "";
             video.pause();
             video.removeAttribute("src");
             video.load();
             mostrarVideosPlaylist();
         }
-
         /* Atualiza imediatamente a lista */
         mostrarPastas();
     });
-
     /* CONTAINER DA PASTA */
     const itemPasta = document.createElement("div");
     itemPasta.appendChild(elementoPasta);
@@ -1085,20 +991,21 @@ pastas.forEach((pasta) => {
     itemPasta.appendChild(btnExcluir);
     /* Coloca o item na lista */
     listaPastas.appendChild(itemPasta);
-});
-}
+    });
+    }
 
-/*========================================
-  PLAYLIST — ADICIONAR VÍDEOS
-========================================*/
-/* BOTÃO ADICIONAR VÍDEOS */
-const btnAdicionarVideos =
-    document.querySelector("#btnAdicionarVideos");
-const seletorPasta = 
-    document.querySelector("#seletorPasta");
 
-/* ABRIR SELETOR DE VÍDEOS */
-btnAdicionarVideos.addEventListener("click", async () => {
+    /*========================================
+      PLAYLIST — ADICIONAR VÍDEOS
+    ========================================*/
+    /* BOTÃO ADICIONAR VÍDEOS */
+    const btnAdicionarVideos =
+        document.querySelector("#btnAdicionarVideos");
+    const seletorPasta = 
+        document.querySelector("#seletorPasta");
+
+        /* ABRIR SELETOR DE VÍDEOS */
+    btnAdicionarVideos.addEventListener("click", async () => {
 
     /* Verifica se existe uma pasta selecionada */
     if(!pastaSelecionada){
@@ -1132,23 +1039,18 @@ btnAdicionarVideos.addEventListener("click", async () => {
         /* Usuário cancelou a seleção */
         return;
     }
-
     for(const handle of handles){
-
         const arquivo = await handle.getFile();
-
         const videoJaExiste = pastaSelecionada.videos.some(
             (item) => item.nome === arquivo.name
         );
-
         if(videoJaExiste){
             continue;
         }
-
         pastaSelecionada.videos.push({
             id: Date.now() + Math.random(),
             nome: arquivo.name,
-            nomePlaylist: arquivo.name,
+            nomePlaylist: arquivo.name.replace(/\.[^/.]+$/, ""),
             handle: handle   /* referência ao arquivo no disco */
         });
     }
@@ -1194,22 +1096,22 @@ seletorPasta.addEventListener("change", () => {
 });
 
 function marcarVideoSelecionado(){
-    const itens =
-        document.querySelectorAll("#listaPlaylistVideos > div");
+    const itens = document.querySelectorAll("#listaPlaylistVideos > div");
     itens.forEach((item) => {
-        const nomeVideo = item.querySelector("span");
-        if(!nomeVideo){
-            return;
-        }
-        if(videoPlaylistSelecionado &&
-           nomeVideo.dataset.videoId ==
-           videoPlaylistSelecionado.id){
-            nomeVideo.classList.add("video-ativo");
-        }else{
-            nomeVideo.classList.remove("video-ativo");
-        }
+    const nomeVideo = item.querySelector("span[data-video-id]");
+    if(!nomeVideo){
+        return;
+    }
+    if(videoPlaylistSelecionado &&
+       nomeVideo.dataset.videoId ==
+       videoPlaylistSelecionado.id){
+        nomeVideo.classList.add("video-ativo");
+    }else{
+        nomeVideo.classList.remove("video-ativo");
+    }
     });
 } 
+
 
 /*========================================
   MOSTRAR VÍDEOS DA PASTA
@@ -1224,139 +1126,135 @@ function mostrarVideosPlaylist(){
     }
     /* Percorre os vídeos da pasta */
     pastaSelecionada.videos.forEach((videoPlaylist, indice) => {
-        /* CONTAINER DO VÍDEO */
-        const itemVideo = document.createElement("div");
-        /* Permite arrastar o vídeo */
-        itemVideo.draggable = true;
-        /* NOME DO VÍDEO */
-        const nomeVideo = document.createElement("span");
+        
 
-        nomeVideo.textContent =
-            videoPlaylist.nomePlaylist;
+    /* CONTAINER DO VÍDEO */
+    const itemVideo = document.createElement("div");
 
-        nomeVideo.dataset.videoId = videoPlaylist.id;
-        /* CLIQUE NO NOME DO VÍDEO */
-        nomeVideo.addEventListener("click", () => {
-            carregarVideoPlaylist(videoPlaylist);
-        });
-        /* BOTÃO RENOMEAR */
-        const btnRenomearVideo = document.createElement("button");
-        btnRenomearVideo.textContent = "✏️";
-        btnRenomearVideo.title = "Renomear vídeo";
-        btnRenomearVideo.addEventListener("click", (evento) => {
-            evento.stopPropagation();
-            const novoNome = prompt(
-                "Digite o novo nome do vídeo:",
-                videoPlaylist.nomePlaylist
-            );
-            if(!novoNome){
-                return;
+    /* Permite arrastar o vídeo */
+    itemVideo.draggable = true;
+
+    /* ÍNDICE DOS VÍDEOS NA PLAYLIST */
+    const numeroVideo = document.createElement("span");
+    numeroVideo.textContent = `${indice + 1}.`;
+    numeroVideo.style.minWidth = "30px";
+
+    /* ADICIONA O NÚMERO À LISTA */
+    itemVideo.appendChild(numeroVideo);
+    
+    /* NOME DO VÍDEO */
+    const nomeVideo = document.createElement("span");
+    nomeVideo.textContent = videoPlaylist.nomePlaylist;
+    nomeVideo.dataset.videoId = videoPlaylist.id;
+    
+    /* CLIQUE NO NOME DO VÍDEO */
+    nomeVideo.addEventListener("click", () => {
+        carregarVideoPlaylist(videoPlaylist);
+    });
+    /* BOTÃO RENOMEAR */
+    const btnRenomearVideo = document.createElement("button");
+    btnRenomearVideo.textContent = "✏️";
+    btnRenomearVideo.title = "Renomear vídeo";
+    btnRenomearVideo.addEventListener("click", (evento) => {
+    evento.stopPropagation();
+    const novoNome = prompt(
+        "Digite o novo nome do vídeo:",
+        videoPlaylist.nomePlaylist
+    );
+    if(!novoNome){
+        return;
+    }
+
+    /* Altera o nome somente na playlist */
+    videoPlaylist.nomePlaylist = novoNome;
+    salvarPasta(pastaSelecionada);
+    nomeVideo.textContent = novoNome;
+    marcarVideoSelecionado();
+    });
+
+    /* BOTÃO EXCLUIR */
+    const btnExcluirVideo = document.createElement("button");
+    btnExcluirVideo.textContent = "🗑️";
+    btnExcluirVideo.title = "Excluir vídeo da playlist";
+    btnExcluirVideo.addEventListener("click", (evento) => {
+        evento.stopPropagation();
+        const confirmar = confirm(
+            "Deseja excluir o vídeo '" +
+            videoPlaylist.nomePlaylist +
+            "' da playlist?"
+        );
+        if(!confirmar){
+            return;
+        }
+        /* Remove o vídeo da pasta */
+        if(videoPlaylistSelecionado === videoPlaylist){
+            videoPlaylistSelecionado = null;
+            nomeVideoAtual.textContent = "";
+            if(enderecoVideoAtual){
+                URL.revokeObjectURL(enderecoVideoAtual);
+                enderecoVideoAtual = null;
             }
-            /* Altera o nome somente na playlist */
-            videoPlaylist.nomePlaylist = novoNome;
+            video.pause();
+            video.removeAttribute("src");
+            video.load();
+        }
+        pastaSelecionada.videos.splice(indice, 1);
+        salvarPasta(pastaSelecionada);
+        mostrarVideosPlaylist();
+    });
 
-            salvarPasta(pastaSelecionada);
 
-            nomeVideo.textContent = novoNome;
-            marcarVideoSelecionado();
-        });
-        /* BOTÃO EXCLUIR */
-        const btnExcluirVideo = document.createElement("button");
-        btnExcluirVideo.textContent = "🗑️";
-        btnExcluirVideo.title = "Excluir vídeo da playlist";
-        btnExcluirVideo.addEventListener("click", (evento) => {
-            evento.stopPropagation();
-            const confirmar = confirm(
-                "Deseja excluir o vídeo '" +
-                videoPlaylist.nomePlaylist +
-                "' da playlist?"
-            );
-            if(!confirmar){
-                return;
-            }
-            /* Remove o vídeo da pasta */
-            if(videoPlaylistSelecionado === videoPlaylist){
-                videoPlaylistSelecionado = null;
-                if(enderecoVideoAtual){
-                    URL.revokeObjectURL(enderecoVideoAtual);
-                    enderecoVideoAtual = null;
-                }
-                video.pause();
-                video.removeAttribute("src");
-                video.load();
-            }
-            pastaSelecionada.videos.splice(indice, 1);
-
-            salvarPasta(pastaSelecionada);
-
-            mostrarVideosPlaylist();
-        });
-
-        /*========================================
-          ARRASTAR VÍDEO PARA MUDAR A POSIÇÃO
-        ========================================*/
-        itemVideo.addEventListener("dragstart", (evento) => {
-            evento.dataTransfer.setData(
-                "text/plain",
-                videoPlaylist.id
-            );
-            itemVideo.classList.add("arrastando");
-        });
-
-        itemVideo.addEventListener("dragend", () => {
-            itemVideo.classList.remove("arrastando");
-        });
-
-        itemVideo.addEventListener("dragover", (evento) => {
-            evento.preventDefault();
-        });
-
-        itemVideo.addEventListener("drop", (evento) => {
-
-            evento.preventDefault();
-
-            const idArrastado =
-                Number(evento.dataTransfer.getData("text/plain"));
-
-            const indiceOrigem =
-                pastaSelecionada.videos.findIndex(
-                    (item) => item.id === idArrastado
-                );
-
-            const indiceDestino =
-                pastaSelecionada.videos.findIndex(
-                    (item) => item.id === videoPlaylist.id
-                );
-
-            if(indiceOrigem === -1 || indiceDestino === -1){
-                return;
-            }
-
-            /* Retira o vídeo da posição antiga */
-            const videoMovido =
-                pastaSelecionada.videos.splice(indiceOrigem, 1)[0];
-
-            /* Coloca o vídeo na nova posição */
-            pastaSelecionada.videos.splice(
-                indiceDestino,
-                0,
-                videoMovido
-            );
-
-            /* Salva a nova ordem */
-            salvarPasta(pastaSelecionada);
-
-            mostrarVideosPlaylist();
-            marcarVideoSelecionado();
-        });
-
-        /* MONTA O ITEM */
-        itemVideo.appendChild(nomeVideo);
-        itemVideo.appendChild(btnRenomearVideo);
-        itemVideo.appendChild(btnExcluirVideo);
-
-        /* COLOCA NA LISTA */
-        lista.appendChild(itemVideo);
+    /*========================================
+      ARRASTAR VÍDEO PARA MUDAR A POSIÇÃO
+    ========================================*/
+    itemVideo.addEventListener("dragstart", (evento) => {
+        evento.dataTransfer.setData(
+            "text/plain",
+            videoPlaylist.id
+        );
+        itemVideo.classList.add("arrastando");
+    });
+    itemVideo.addEventListener("dragend", () => {
+        itemVideo.classList.remove("arrastando");
+    });
+    itemVideo.addEventListener("dragover", (evento) => {
+        evento.preventDefault();
+    });
+    itemVideo.addEventListener("drop", (evento) => {
+    evento.preventDefault();
+    const idArrastado =
+        Number(evento.dataTransfer.getData("text/plain"));
+    const indiceOrigem =
+        pastaSelecionada.videos.findIndex(
+            (item) => item.id === idArrastado
+        );
+    const indiceDestino =
+        pastaSelecionada.videos.findIndex(
+            (item) => item.id === videoPlaylist.id
+        );
+    if(indiceOrigem === -1 || indiceDestino === -1){
+        return;
+    }
+    /* Retira o vídeo da posição antiga */
+    const videoMovido =
+        pastaSelecionada.videos.splice(indiceOrigem, 1)[0];
+    /* Coloca o vídeo na nova posição */
+    pastaSelecionada.videos.splice(
+        indiceDestino,
+        0,
+        videoMovido
+    );
+    /* Salva a nova ordem */
+    salvarPasta(pastaSelecionada);
+    mostrarVideosPlaylist();
+    marcarVideoSelecionado();
+    });
+    /* MONTA O ITEM */
+    itemVideo.appendChild(nomeVideo);
+    itemVideo.appendChild(btnRenomearVideo);
+    itemVideo.appendChild(btnExcluirVideo);
+    /* COLOCA NA LISTA */
+    lista.appendChild(itemVideo);
     });
 
     /* Mantém o vídeo em reprodução destacado */
