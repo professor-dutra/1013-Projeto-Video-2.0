@@ -430,7 +430,16 @@ async function obterArquivo(item){
                 console.warn("Permissão negada pelo usuário para o arquivo:", item.nomePlaylist);
                 return null;
             }
-            return await item.handle.getFile();
+        const arquivo = await item.handle.getFile();
+                
+        console.log("Arquivo recuperado:", {
+            nome: arquivo.name,
+            tamanho: arquivo.size,
+            tipo: arquivo.type,
+            ultimaModificacao: arquivo.lastModified
+        });
+        
+        return arquivo;
         }catch(erro){
             console.error("Erro ao acessar o arquivo:", erro);
             alert(
@@ -442,10 +451,27 @@ async function obterArquivo(item){
     }
 
     // CENÁRIO 2: Celular / Web (Arquivo binário vindo do IndexedDB)
-    if (item.arquivo) {
-        // Se veio do IndexedDB após reiniciar, ele mantém as propriedades do arquivo binário (Blob)
-        return item.arquivo; 
-    }
+    if (item.arquivo instanceof Blob && item.arquivo.size > 0) {
+    console.log("Arquivo recuperado do IndexedDB:", {
+        nome: item.nomePlaylist || item.nome,
+        tamanho: item.arquivo.size,
+        tipo: item.arquivo.type
+    });
+
+    return item.arquivo;
+}
+
+console.error("Arquivo ausente ou inválido na playlist:", {
+    nome: item.nomePlaylist || item.nome,
+    arquivoExiste: Boolean(item.arquivo),
+    tipo: item.arquivo?.constructor?.name,
+    tamanho: item.arquivo?.size
+});
+
+alert(
+    "O vídeo '" + (item.nomePlaylist || item.nome) +
+    "' não foi recuperado corretamente da playlist."
+);
     return null;
 }
 
@@ -818,6 +844,7 @@ function salvarPasta(pasta){
         );
     };
 }
+
 /* Salva TODAS as pastas (usado só na inicialização) */
 function salvarPlaylist(){
     if(!bancoPlaylistPronto){
@@ -900,7 +927,7 @@ function mostrarPastas(){
     ){
         elementoPasta.classList.add("pasta-ativa");
     }
-    
+
     /* Selecionar a pasta */
     elementoPasta.addEventListener("click", () => {
     /* Guarda a pasta selecionada */
