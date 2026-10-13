@@ -12,6 +12,10 @@ body{
     overflow-x: hidden;
 }
 
+H1{
+    text-align: center;
+}
+
 #app{
     width: 100%;
     min-height: 100vh;
@@ -38,6 +42,37 @@ body{
     background-color: black;
     object-fit: contain;
     transform-origin: center center;
+}
+
+/* NOME DO VÍDEO NO CANTO SUPERIOR DIREITO */
+
+/* TESTE VISUAL DO NOME DO VÍDEO */
+#nomeVideoAtual{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    max-width: 80%;
+    padding: 8px 12px;
+
+    color: #ffffff !important;
+    font-size: 18px;
+    font-weight: bold;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    pointer-events: none;
+    opacity: 1 !important;
+    z-index: 100;
+}
+
+
+/* ELEMENTOS OCULTOS PELO TEMPORIZADOR */
+.video-container.controles-ocultos .barra-controles,
+.video-container.controles-ocultos #nomeVideoAtual{
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* VÍDEO ATUALMENTE EM EXECUÇÃO */
@@ -137,6 +172,8 @@ body{
     width: 100%;
     padding: 6px 10px;
     background-color: rgba(233, 11, 15, 0.5);
+    opacity: 1;
+    transition: opacity 0.3s;
 }
 
 /* BARRA DE PROGRESSO */
@@ -273,11 +310,18 @@ margin-top: 15px;
     display: flex;
     align-items: center;
     width: 100%;
-    gap: 8px;
+    gap: 0;
+}
+
+/* NUMERAÇÃO DOS VÍDEOS */
+#listaPlaylistVideos > div > span:first-child{
+    flex: 0 0 auto;
+    min-width: 0;
+    margin-right: 3px;
 }
 
 /* NOME DO VÍDEO */
-#listaPlaylistVideos > div > span{
+#listaPlaylistVideos > div > span[data-video-id]{
     flex: 1;
     min-width: 0;
     cursor: pointer;
@@ -286,6 +330,13 @@ margin-top: 15px;
 /* BOTÕES EDITAR E EXCLUIR */
 #listaPlaylistVideos > div > button{
     flex-shrink: 0;
+}
+
+/* DESTAQUE DE TODO O BLOCO DA PASTA SELECIONADA */
+#listaPastas > div:has(button.pasta-ativa) button{
+    background-color: #218838 !important;
+    color: #FFFFFF !important;
+    font-weight: bold !important;
 }
 
 /*========================================
@@ -298,6 +349,14 @@ RESPONSIVIDADE
         width: 100vw;
         min-height: 100vh;
     }
+
+    #nomeVideoAtual{
+    top: 5px;
+    right: 5px;
+    max-width: 90%;
+    font-size: 13px;
+    padding: 4px 6px;
+}
 
     /*PLAYER*/
     .video-container{
@@ -343,6 +402,14 @@ RESPONSIVIDADE
     #listaPastas{
         flex-direction: column;
     }
+    
+    /* PASTA EM USO */
+    #listaPastas button.pasta-ativa{
+        background-color: #4CAF50 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
     .playlist button{
         width: 100%;
     }
@@ -366,12 +433,5 @@ RESPONSIVIDADE
         max-height: calc(100vh - 56.25vw);
         overflow-y: auto;
         overflow-x: hidden;
-    }
-}
-
-/* LOGIN INICIAL — CELULAR */
-@media (max-width: 600px){
-    .login{
-        display: none;
     }
 }
